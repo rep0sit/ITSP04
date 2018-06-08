@@ -12,23 +12,58 @@ public class Client extends Object {
 		private Ticket tgsTicket = null; // Speicherung bei Login nötig
 		private long tgsSessionKey; // K(C,TGS) // Speicherung bei Login nötig
 
+		private String tgsServer = "mytgs";
+		
 		// Konstruktor
 		public Client(KDC kdc) {
 			myKDC = kdc;
 		}
-
+		/**
+		 * TGS-Ticket fuer den uebergebenen User vom KDC (AS) holen
+		 * (TGS-Servername: myTGS) und zusammen mit dem TGS-Sessionkey und 
+		 * dem UserNamen speichern.
+		 * 
+		 * @param userName
+		 * @param password
+		 * @return Status (Login ok/fehlgeschlagen)
+		 * 
+		 */
 		public boolean login(String userName, char[] password) {
 			/* ToDo */
-			myKDC.requestTGSTicket(userName, "myTGS", generateNonce());
+			//Speichern des userNames
+			currentUser = userName;
+			long nonce 	=  generateNonce();
 			
+			TicketResponse tgsTicketResponse = myKDC.requestTGSTicket(userName, tgsServer, nonce);
+			
+			if(tgsTicketResponse != null){
+				//Sitzungsschluessel mit password verschluesselt
+				long passwordLong = generateSimpleKeyFromPassword(password);
+				
+				if(tgsTicketResponse.decrypt(passwordLong) && (nonce == tgsTicketResponse.getNonce())){
+					//Speicherung des tgsTickets
+					tgsTicket = tgsTicketResponse.getResponseTicket();
+					//Speicherung des tgsSessionkeys
+					tgsSessionKey = tgsTicketResponse.getSessionKey();
+					return true;
+				}
+			}
 			
 			return false;
 		}
-
+		/**
+		 * Serverticket vom KDC (TGS) holen und schowFile-Service beim uebergebenen
+		 * Fileserver anfordern.
+		 * 
+		 * @param fileServer
+		 * @param filePath
+		 * @return Status (Befehlsausfuehrung ok / fehlgeschlagen)
+		 * 
+		 */
 		public boolean showFile(Server fileServer, String filePath) {
+			/* ToDo */
 			
 			return false;
-			/* ToDo */
 		}
 
 		/* *********** Hilfsmethoden **************************** */
