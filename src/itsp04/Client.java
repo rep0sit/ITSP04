@@ -1,5 +1,7 @@
 package itsp04;
 
+import java.util.Arrays;
+
 /* Simulation einer Kerberos-Session mit Zugriff auf einen Fileserver
  /* Client-Klasse
  */
@@ -12,7 +14,7 @@ public class Client extends Object {
 		private Ticket tgsTicket = null; // Speicherung bei Login nötig
 		private long tgsSessionKey; // K(C,TGS) // Speicherung bei Login nötig
 
-		private String tgsServer = "mytgs";
+		private String tgsServer = "myTGS";
 		
 		private Server myFileServer;
 		
@@ -46,11 +48,11 @@ public class Client extends Object {
 					tgsTicket = tgsTicketResponse.getResponseTicket();
 					//Speicherung des tgsSessionkeys
 					tgsSessionKey = tgsTicketResponse.getSessionKey();
-					return true;
+					tgsTicket.print();
 				}
 			}
-			
-			return false;
+			Arrays.fill(password, ' ');
+			return tgsTicket != null;
 		}
 		/**
 		 * Serverticket vom KDC (TGS) holen und schowFile-Service beim uebergebenen
