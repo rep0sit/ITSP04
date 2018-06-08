@@ -35,6 +35,8 @@ public class KDC extends Object {
 
 		private long serverKey; // K(S)
 
+		long tgsSessionKey; // K(C,TGS)
+		
 		// Konstruktor
 		public KDC(String name) {
 			tgsName = name;
@@ -72,7 +74,7 @@ public class KDC extends Object {
 
 		public TicketResponse requestTGSTicket(String userName, String tgsServerName, long nonce) {
 			/* Anforderung eines TGS-Tickets bearbeiten. Rückgabe: TicketResponse für die Anfrage */
-			long tgsSessionKey; // K(C,TGS)
+//			long tgsSessionKey; // K(C,TGS)
 
 			TicketResponse tgsTicketResp = null;
 			Ticket tgsTicket = null;
@@ -106,10 +108,50 @@ public class KDC extends Object {
 		 * *********** TGS-Modul: Server - Ticketanfrage
 		 * ****************************
 		 */
-
+		/**
+		 * Anforderung eines Server-Tickets bearbeiten
+		 * 
+		 * @param tgsTicket
+		 * @param tgsAuth
+		 * @param serverName
+		 * @param nonce
+		 * @return TicketResponse fuer die Anfrage
+		 * 
+		 */
 		public TicketResponse requestServerTicket(Ticket tgsTicket, Auth tgsAuth, String serverName, long nonce) {
-			return null;
 			/* ToDo */
+			//Rueckgabewert TicketResponse
+			TicketResponse ticketResponse = null;
+			//Sitzungsschluessel
+			long sessionKey;
+			long currentTime;
+			long endTime;
+			
+			// Ticket und Auth entschluesseln
+			tgsTicket.decrypt(tgsKey);
+			tgsAuth.decrypt(tgsTicket.getSessionKey());
+			
+			// Pruefungen:
+			// Servername, Clientname, Time
+			if(tgsTicket.getServerName().equals(tgsName)
+				&& tgsTicket.getClientName().equals(tgsAuth.getClientName())
+				&& timeValid(tgsTicket.getStartTime(), tgsTicket.getEndTime())
+				&& timeFresh(tgsAuth.getCurrentTime())){
+				//ServerTicket + Sitzungsschluessel K(C,S) mit K(C,TGS) verschluesselt
+				sessionKey = generateSimpleKey();
+				currentTime = System.currentTimeMillis();
+				endTime = currentTime + tenHoursInMillis;
+				
+				//Server-Ticket erstellen und verschluesseln
+				Ticket ticket = new Ticket(user, serverName, currentTime, endTime, sessionKey);
+				ticket.encrypt(getServerKey(serverName));
+				//TicketResponse erstellen und verschluesseln
+				ticketResponse = new TicketResponse(sessionKey, nonce, ticket);
+				ticketResponse.encrypt(tgsSessionKey);
+				
+			}
+			
+			return ticketResponse;
 		}
 
 		/* *********** Hilfsmethoden **************************** */
