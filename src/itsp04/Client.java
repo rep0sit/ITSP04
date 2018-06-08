@@ -14,6 +14,8 @@ public class Client extends Object {
 
 		private String tgsServer = "mytgs";
 		
+		private Server myFileServer;
+		
 		// Konstruktor
 		public Client(KDC kdc) {
 			myKDC = kdc;
@@ -61,7 +63,28 @@ public class Client extends Object {
 		 * 
 		 */
 		public boolean showFile(Server fileServer, String filePath) {
+			myFileServer = fileServer;
+			long serverSessionKey;
+			Ticket serverTicket = null;
+			
 			/* ToDo */
+			long currentTime = System.currentTimeMillis();
+			Auth tgsAuth = new Auth(currentUser, currentTime);
+			// Authentifikation mit dem Key verschlüsseln
+			tgsAuth.encrypt(tgsSessionKey);
+			// nonce
+			long nonce 	=  generateNonce();
+			
+			TicketResponse serverTicketResponse = myKDC.requestServerTicket(tgsTicket, tgsAuth, tgsServer, nonce);
+			
+			if(serverTicketResponse.decrypt(tgsSessionKey) && (nonce == serverTicketResponse.getNonce())){
+				serverTicket = serverTicketResponse.getResponseTicket();
+				serverSessionKey = serverTicketResponse.getSessionKey();
+			}
+			
+			if(serverTicket != null){
+				return myFileServer.requestService(serverTicket, tgsAuth, "showFile", filePath);
+			}
 			
 			return false;
 		}
