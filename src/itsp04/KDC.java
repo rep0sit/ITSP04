@@ -126,6 +126,8 @@ public class KDC extends Object {
 			long currentTime;
 			long endTime;
 			
+			Ticket ticket; 
+			
 			// Ticket und Auth entschluesseln
 			tgsTicket.decrypt(tgsKey);
 			tgsAuth.decrypt(tgsTicket.getSessionKey());
@@ -138,11 +140,11 @@ public class KDC extends Object {
 				&& timeFresh(tgsAuth.getCurrentTime())){
 				//ServerTicket + Sitzungsschluessel K(C,S) mit K(C,TGS) verschluesselt
 				sessionKey = generateSimpleKey();
-				currentTime = System.currentTimeMillis();
-				endTime = currentTime + tenHoursInMillis;
+				currentTime = (new Date()).getTime(); //System.currentTimeMillis();
+				//endTime = currentTime + tenHoursInMillis;
 				
 				//Server-Ticket erstellen und verschluesseln
-				Ticket ticket = new Ticket(user, serverName, currentTime, endTime, sessionKey);
+				ticket = new Ticket(user, serverName, currentTime, currentTime+tenHoursInMillis, sessionKey);
 				ticket.encrypt(getServerKey(serverName));
 				//TicketResponse erstellen und verschluesseln
 				ticketResponse = new TicketResponse(sessionKey, nonce, ticket);

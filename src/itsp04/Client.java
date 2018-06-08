@@ -1,6 +1,6 @@
 package itsp04;
 
-import java.util.Arrays;
+import java.util.*;
 
 /* Simulation einer Kerberos-Session mit Zugriff auf einen Fileserver
  /* Client-Klasse
@@ -37,7 +37,7 @@ public class Client extends Object {
 			currentUser = userName;
 			long nonce 	=  generateNonce();
 			
-			TicketResponse tgsTicketResponse = myKDC.requestTGSTicket(userName, tgsServer, nonce);
+			TicketResponse tgsTicketResponse = myKDC.requestTGSTicket(currentUser, tgsServer, nonce);
 			
 			if(tgsTicketResponse != null){
 				//Sitzungsschluessel mit password verschluesselt
@@ -65,27 +65,31 @@ public class Client extends Object {
 		 */
 		public boolean showFile(Server fileServer, String filePath) {
 			myFileServer = fileServer;
-			long serverSessionKey;
+			long serverSessionKey = 0;
 			Ticket serverTicket = null;
 			
-			long currentTime = System.currentTimeMillis();
-			Auth tgsAuth = new Auth(currentUser, currentTime);
-			// Authentifikation mit dem Key verschlüsseln
-			tgsAuth.encrypt(tgsSessionKey);
-			// nonce
-			long nonce 	=  generateNonce();
-			
-			TicketResponse serverTicketResponse = myKDC.requestServerTicket(tgsTicket, tgsAuth, tgsServer, nonce);
-			
-			if(serverTicketResponse.decrypt(tgsSessionKey) && (nonce == serverTicketResponse.getNonce())){
-				serverTicket = serverTicketResponse.getResponseTicket();
-				serverSessionKey = serverTicketResponse.getSessionKey();
+			if(tgsTicket != null){
+				long currentTime = (new Date()).getTime();    //System.currentTimeMillis();
+				Auth tgsAuth = new Auth(currentUser, currentTime);
+				// Authentifikation mit dem Key verschlüsseln
+				tgsAuth.encrypt(tgsSessionKey);
+				// nonce
+				long nonce 	=  generateNonce();
+				
+				TicketResponse serverTicketResponse = myKDC.requestServerTicket(tgsTicket, tgsAuth, myFileServer.getName(), nonce);
+				serverTicketResponse.print();
+				
+				if(serverTicketResponse.decrypt(tgsSessionKey) && (nonce == serverTicketResponse.getNonce())){
+					serverTicket = serverTicketResponse.getResponseTicket();
+					serverSessionKey = serverTicketResponse.getSessionKey();
+				}
+				
+				if(serverTicket != null){
+					Auth serverAuth = new Auth(currentUser,new Date().getTime());
+					serverAuth.encrypt(serverSessionKey);
+					return myFileServer.requestService(serverTicket, serverAuth, "showFile", filePath);
+				}
 			}
-			
-			if(serverTicket != null){
-				return myFileServer.requestService(serverTicket, tgsAuth, "showFile", filePath);
-			}
-			
 			return false;
 		}
 
