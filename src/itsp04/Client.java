@@ -18,11 +18,15 @@ public class Client extends Object {
 		}
 
 		public boolean login(String userName, char[] password) {
-			return false;
 			/* ToDo */
+			myKDC.requestTGSTicket(userName, "myTGS", generateNonce());
+			
+			
+			return false;
 		}
 
 		public boolean showFile(Server fileServer, String filePath) {
+			
 			return false;
 			/* ToDo */
 		}
