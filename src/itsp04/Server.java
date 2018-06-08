@@ -41,10 +41,29 @@ public class Server extends Object {
 					+ " erfolgreich registriert bei KDC " + myKDC.getName()
 					+ " mit ServerKey " + myKey);
 		}
-
+		/**
+		 * showFile-Befehl mit Filepath als Parameter ausfuehren,
+		 * d.h. Dateiinhalt zeilenweise auf der Konsole ausgeben
+		 * 
+		 * @param srvTicket
+		 * @param srvAuth
+		 * @param command
+		 * @param parameter
+		 * @return
+		 * 
+		 */
 		public boolean requestService(Ticket srvTicket, Auth srvAuth,
 				String command, String parameter) {
-				/* ToDo */
+			srvTicket.print();
+			if(srvTicket.decrypt(myKey) && (srvTicket.getServerName() == myName)){
+				//Pruefen auf korrekte SessionKey, Username, Time
+				if(srvAuth.decrypt(srvTicket.getSessionKey())
+					&& (srvAuth.getClientName() == srvTicket.getClientName())
+					&& timeValid(srvTicket.getStartTime(),srvTicket.getEndTime())
+					&& timeFresh(srvAuth.getCurrentTime())){
+					return this.showFile(parameter);
+				}
+			}
 			return false;
 		}
 

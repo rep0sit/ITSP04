@@ -31,7 +31,6 @@ public class Client extends Object {
 		 * 
 		 */
 		public boolean login(String userName, char[] password) {
-			/* ToDo */
 			//Speichern des userNames
 			currentUser = userName;
 			long nonce 	=  generateNonce();
@@ -67,7 +66,6 @@ public class Client extends Object {
 			long serverSessionKey;
 			Ticket serverTicket = null;
 			
-			/* ToDo */
 			long currentTime = System.currentTimeMillis();
 			Auth tgsAuth = new Auth(currentUser, currentTime);
 			// Authentifikation mit dem Key verschlüsseln

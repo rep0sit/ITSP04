@@ -119,7 +119,6 @@ public class KDC extends Object {
 		 * 
 		 */
 		public TicketResponse requestServerTicket(Ticket tgsTicket, Auth tgsAuth, String serverName, long nonce) {
-			/* ToDo */
 			//Rueckgabewert TicketResponse
 			TicketResponse ticketResponse = null;
 			//Sitzungsschluessel
