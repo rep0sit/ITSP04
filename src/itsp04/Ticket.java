@@ -25,12 +25,12 @@ public class Ticket  extends Object {
 
 		private long mySessionKey; // Konstruktor-Parameter
 
-		// Geheimer Schlüssel, mit dem das Ticket (simuliert) verschlüsselt ist:
+		// Geheimer Schlï¿½ssel, mit dem das Ticket (simuliert) verschlï¿½sselt ist:
 		private long myTicketKey;
 
 		private boolean isEncryptedState; // Aktueller Zustand des Objekts
 
-		// Kalenderobjekt zur Zeitumrechnung (für Testausgaben)
+		// Kalenderobjekt zur Zeitumrechnung (fï¿½r Testausgaben)
 		private Calendar cal;
 
 		// Konstruktor
@@ -45,50 +45,50 @@ public class Ticket  extends Object {
 
 			myTicketKey = -1;
 			isEncryptedState = false;
-			cal = new GregorianCalendar(); // für Testausgaben
+			cal = new GregorianCalendar(); // fï¿½r Testausgaben
 		}
 
 		public String getClientName() {
 			if (isEncryptedState) {
-				printError("Zugriff auf verschlüsseltes Ticket (getClientName)");
+				printError("Zugriff auf verschlÃ¼sseltes Ticket (getClientName)");
 			}
 			return myClientName;
 		}
 
 		public String getServerName() {
 			if (isEncryptedState) {
-				printError("Zugriff auf verschlüsseltes Ticket (getServerName)");
+				printError("Zugriff auf verschlÃ¼sseltes Ticket (getServerName)");
 			}
 			return myServerName;
 		}
 
 		public long getStartTime() {
 			if (isEncryptedState) {
-				printError("Zugriff auf verschlüsseltes Ticket (getStartTime)");
+				printError("Zugriff auf verschlÃ¼sseltes Ticket (getStartTime)");
 			}
 			return myStartTime;
 		}
 
 		public long getEndTime() {
 			if (isEncryptedState) {
-				printError("Zugriff auf verschlüsseltes Ticket (getEndTime)");
+				printError("Zugriff auf verschlÃ¼sseltes Ticket (getEndTime)");
 			}
 			return myEndTime;
 		}
 
 		public long getSessionKey() {
 			if (isEncryptedState) {
-				printError("Zugriff auf verschlüsseltes Ticket (getSessionKey)");
+				printError("Zugriff auf verschlÃ¼sseltes Ticket (getSessionKey)");
 			}
 			return mySessionKey;
 		}
 
 		public boolean encrypt(long key) {
-			// Ticket mit dem Key verschlüsseln.
-			// Falls das Ticket bereits verschlüsselt ist, wird false zurückgegeben.
+			// Ticket mit dem Key verschlï¿½sseln.
+			// Falls das Ticket bereits verschlï¿½sselt ist, wird false zurï¿½ckgegeben.
 			boolean encOK = false;
 			if (isEncryptedState) {
-				printError("Ticket ist bereits verschlüsselt");
+				printError("Ticket ist bereits verschlÃ¼sselt");
 			} else {
 				myTicketKey = key;
 				isEncryptedState = true;
@@ -98,15 +98,15 @@ public class Ticket  extends Object {
 		}
 
 		public boolean decrypt(long key) {
-			// Ticket mit dem Key entschlüsseln.
+			// Ticket mit dem Key entschlï¿½sseln.
 			// Falls der Key falsch ist oder
-			// falls das Ticket bereits entschlüsselt ist, wird false zurückgegeben.
+			// falls das Ticket bereits entschlï¿½sselt ist, wird false zurï¿½ckgegeben.
 			boolean decOK = false;
 			if (!isEncryptedState) {
-				printError("Ticket ist bereits entschlüsselt");
+				printError("Ticket ist bereits entschlÃ¼sselt");
 			}
 			if (myTicketKey != key) {
-				printError("Ticket-Entschlüsselung mit key " + key
+				printError("Ticket-EntschlÃ¼sselung mit key " + key
 						+ " ist fehlgeschlagen");
 			} else {
 				isEncryptedState = false;
@@ -116,22 +116,22 @@ public class Ticket  extends Object {
 		}
 
 		public boolean isEncrypted() {
-			// Aktuellen Zustand zurückgeben: verschlüsselt (true) / entschlüsselt
+			// Aktuellen Zustand zurï¿½ckgeben: verschlï¿½sselt (true) / entschlï¿½sselt
 			// (false)
 			return isEncryptedState;
 		}
 
 		public void print() {
-			System.out.println("********* Ticket für " + myClientName + " / "
+			System.out.println("********* Ticket fÃ¼r " + myClientName + " / "
 					+ myServerName + " *******");
 			System.out.println("StartTime: " + getDateString(myStartTime)
 					+ " - EndTime: " + getDateString(myEndTime));
 			System.out.println("Session Key: " + mySessionKey);
 			System.out.println("Ticket Key: " + myTicketKey);
 			if (isEncryptedState) {
-				System.out.println("Ticket-Zustand: verschlüsselt (encrypted)!");
+				System.out.println("Ticket-Zustand: verschlÃ¼sselt (encrypted)!");
 			} else {
-				System.out.println("Ticket-Zustand: entschlüsselt (decrypted)!");
+				System.out.println("Ticket-Zustand: entschlÃ¼sselt (decrypted)!");
 			}
 		}
 

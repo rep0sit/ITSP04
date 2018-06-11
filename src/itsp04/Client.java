@@ -10,9 +10,9 @@ public class Client extends Object {
 
 		private KDC myKDC; // Konstruktor-Parameter
 
-		private String currentUser; // Speicherung bei Login nötig
-		private Ticket tgsTicket = null; // Speicherung bei Login nötig
-		private long tgsSessionKey; // K(C,TGS) // Speicherung bei Login nötig
+		private String currentUser; // Speicherung bei Login nï¿½tig
+		private Ticket tgsTicket = null; // Speicherung bei Login nï¿½tig
+		private long tgsSessionKey; // K(C,TGS) // Speicherung bei Login nï¿½tig
 
 		private String tgsServer = "myTGS";
 		
@@ -71,7 +71,7 @@ public class Client extends Object {
 			if(tgsTicket != null){
 				long currentTime = (new Date()).getTime();    //System.currentTimeMillis();
 				Auth tgsAuth = new Auth(currentUser, currentTime);
-				// Authentifikation mit dem Key verschlüsseln
+				// Authentifikation mit dem Key verschlï¿½sseln
 				tgsAuth.encrypt(tgsSessionKey);
 				// nonce
 				long nonce 	=  generateNonce();
@@ -96,8 +96,8 @@ public class Client extends Object {
 		/* *********** Hilfsmethoden **************************** */
 
 		private long generateSimpleKeyFromPassword(char[] passwd) {
-			// Liefert einen eindeutig aus dem Passwort abgeleiteten Schlüssel
-			// zurück, hier simuliert als long-Wert
+			// Liefert einen eindeutig aus dem Passwort abgeleiteten Schlï¿½ssel
+			// zurï¿½ck, hier simuliert als long-Wert
 			long pwKey = 0;
 			if (passwd != null) {
 				for (int i = 0; i < passwd.length; i++) {

@@ -22,7 +22,8 @@ public class KerberosSim {
 			char[] password = { 'S', 'e', 'c', 'r', 'e', 't', '!' };
 			String serverName = "myFileserver";
 			String tgsName = "myTGS";
-			String filePath = "C:/Temp/ITS.txt";
+			//String filePath = "C:/Temp/ITS.txt";
+			String filePath = "ITS.txt";
 
 			KerberosSim thisSession = new KerberosSim();
 
@@ -33,14 +34,14 @@ public class KerberosSim {
 
 			/* -------- Benutzersession simulieren ------ */
 			// Passwort vom Benutzer holen
-			System.out.println("Starte Login-Session für Benutzer: " + userName);
+			System.out.println("Starte Login-Session fÃ¼r Benutzer: " + userName);
 			password = thisSession.readPasswd(userName);
 			if (password != null) {
 
 				// Benutzeranmeldung beim KDC
 				boolean loginOK = thisSession.myClient.login(userName, password);
 
-				// Passwort im Hauptspeicher löschen (überschreiben)!!
+				// Passwort im Hauptspeicher lï¿½schen (ï¿½berschreiben)!!
 				Arrays.fill(password, ' ');
 
 				if (!loginOK) {
@@ -63,7 +64,7 @@ public class KerberosSim {
 
 			// Server initialisieren
 			myFileserver = new Server(serverName);
-			myFileserver.setupService(myKDC); // Schlüsselerzeugung und -austausch
+			myFileserver.setupService(myKDC); // Schlï¿½sselerzeugung und -austausch
 
 			// User-Account und Client erzeugen
 			myKDC.userRegistration(userName, password);
@@ -71,11 +72,11 @@ public class KerberosSim {
 		}
 
 		private char[] readPasswd(String userName) {
-			/* Passwort des Benutzers zurückgeben oder null, falls Abbruch */
+			/* Passwort des Benutzers zurï¿½ckgeben oder null, falls Abbruch */
 			char[] password = null;
 
 			JPasswordField pf = new JPasswordField();
-			int okCxl = JOptionPane.showConfirmDialog(null, pf, "Passwort für " + userName + ": ",
+			int okCxl = JOptionPane.showConfirmDialog(null, pf, "Passwort fÃ¼r " + userName + ": ",
 					JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 
 			if (okCxl == JOptionPane.OK_OPTION) {
